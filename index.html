@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DentaLux — Стоматология нового уровня</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #4DB8C2;
+    --teal-light: #7DD4DA;
+    --teal-pale: #E8F7F8;
+    --teal-dark: #2A9DAA;
+    --white: #FFFFFF;
+    --off-white: #F7FBFC;
+    --text: #1A2E32;
+    --text-muted: #6B8C91;
+    --border: #D4EDEF;
+    --shadow: rgba(77, 184, 194, 0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ── REVEAL ANIMATION ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity 0.7s cubic-bezier(.22,1,.36,1), transform 0.7s cubic-bezier(.22,1,.36,1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ── HEADER ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 5vw;
+    height: 72px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: box-shadow 0.3s;
+  }
+  header.scrolled { box-shadow: 0 4px 32px var(--shadow); }
+
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.7rem;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    z-index: 101;
+  }
+  .logo span { color: var(--teal); }
+
+  nav { display: flex; align-items: center; gap: 2rem; }
+  nav a {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--teal-dark); }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 101;
+  }
+
+  .header-phone {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 1rem; font-weight: 500;
+    color: var(--text);
+    text-decoration: none;
+    padding: 0.5rem 1.25rem;
+    border: 1.5px solid var(--teal);
+    border-radius: 100px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .header-phone:hover { background: var(--teal); color: var(--white); }
+  .header-phone svg { width: 16px; height: 16px; }
+
+  .burger-btn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text);
+    padding: 0.5rem;
+  }
+  .burger-btn svg { width: 28px; height: 28px; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 72px;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    padding: 8vh 5vw 6vh 5vw;
+    display: flex; flex-direction: column; justify-content: center;
+    background: var(--off-white);
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--teal-pale);
+    color: var(--teal-dark);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 1.75rem;
+    width: fit-content;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--teal);
+    border-radius: 50%;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 4.5vw, 4.2rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+  h1 em { font-style: italic; color: var(--teal-dark); }
+
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 420px;
+    margin-bottom: 3rem;
+  }
+
+  .stats {
+    display: flex; gap: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: var(--teal-dark);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-right img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .hero-form-overlay {
+    position: absolute;
+    bottom: 48px; right: 48px; left: 48px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.12);
+    border: 1px solid rgba(255,255,255,0.8);
+  }
+  .form-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+  }
+  .form-sub {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+  }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .form-grid input, .form-grid select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    color: var(--text);
+    background: var(--white);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-grid input:focus, .form-grid select:focus { border-color: var(--teal); }
+  .form-grid input::placeholder { color: var(--text-muted); }
+  .form-span { grid-column: 1 / -1; }
+  .btn-primary {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--teal-dark);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    letter-spacing: 0.02em;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: var(--teal); transform: translateY(-1px); }
+  .form-note {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 0.75rem;
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 100px 5vw; }
+  .section-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal-dark);
+    background: var(--teal-pale);
+    padding: 0.35rem 0.9rem;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 300;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+  }
+  .section-sub {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 520px;
+    margin-bottom: 3rem;
+  }
+
+  /* ── SERVICES ── */
+  #services { background: var(--off-white); }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    justify-content: center; 
+  }
+  .service-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: default;
+  }
+  .service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 48px var(--shadow);
+  }
+  .service-icon {
+    width: 52px; height: 52px;
+    background: var(--teal-pale);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.25rem;
+    font-size: 1.5rem;
+  }
+  .service-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  .service-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+  .service-price {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .service-price strong { color: var(--teal-dark); font-size: 1rem; }
+
+  /* ── DOCTORS ── */
+  #doctors { background: var(--white); }
+  .doctors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    justify-content: center; 
+  }
+  .doctor-card {
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .doctor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 56px var(--shadow);
+  }
+  .doctor-photo {
+    width: 100%; height: 280px;
+    object-fit: cover;
+    display: block;
+    filter: saturate(0.85);
+    transition: filter 0.3s;
+  }
+  .doctor-card:hover .doctor-photo { filter: saturate(1); }
+  .doctor-info {
+    padding: 1.5rem;
+    background: var(--white);
+  }
+  .doctor-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+  }
+  .doctor-spec {
+    font-size: 0.8rem;
+    color: var(--teal-dark);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .doctor-exp {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  /* ── WHY US ── */
+  #why { background: var(--teal-pale); }
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+    justify-content: center; 
+  }
+  .why-item {
+    padding: 1.75rem;
+    background: var(--white);
+    border-radius: 18px;
+    border: 1px solid var(--border);
+  }
+  .why-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--teal-light);
+    line-height: 1;
+    margin-bottom: 0.75rem;
+  }
+  .why-title {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+  }
+  .why-text {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  /* ── REVIEWS ── */
+  #reviews { background: var(--off-white); }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+    justify-content: center;
+  }
+  .review-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+  }
+  .review-stars { color: var(--teal); font-size: 1rem; margin-bottom: 1rem; }
+  .review-text {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+  .review-author {
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .review-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--teal-pale);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--teal-dark);
+    flex-shrink: 0;
+  }
+  .review-name { font-size: 0.875rem; font-weight: 500; }
+  .review-date { font-size: 0.75rem; color: var(--text-muted); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--text);
+    color: rgba(255,255,255,0.7);
+    padding: 80px 5vw 40px;
+  }
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 3rem;
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 1rem;
+  }
+  .footer-logo span { color: var(--teal-light); }
+  .footer-desc { font-size: 0.875rem; line-height: 1.7; max-width: 340px; }
+  .footer-contact-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 1.25rem;
+  }
+  .footer-contact-item {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    font-size: 0.875rem; margin-bottom: 0.75rem;
+  }
+  .footer-contact-item svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; color: var(--teal-light); }
+  .map-embed {
+    width: 100%; height: 300px;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 3rem;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .map-embed iframe { width: 100%; height: 100%; border: none; display: block; }
+  .footer-bottom {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.78rem;
+    flex-wrap: wrap; gap: 0.5rem;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .burger-btn { display: block; }
+    .header-phone { display: none; } 
+    nav { 
+      position: absolute;
+      top: 72px; left: 0; right: 0;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(16px);
+      flex-direction: column;
+      padding: 2rem 5vw;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 10px 20px var(--shadow);
+      clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+      transition: clip-path 0.3s ease-in-out;
+    }
+    nav.active { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+    nav a { font-size: 1.1rem; padding: 1rem 0; width: 100%; border-bottom: 1px solid var(--off-white); }
+    nav a:last-child { border-bottom: none; }
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-right { display: flex; flex-direction: column; }
+    .hero-right img { height: 400px; }
+    .hero-form-overlay { position: relative; bottom: auto; right: auto; left: auto; margin: -60px 24px 40px 24px; z-index: 2; }
+    .footer-top { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+  @media (max-width: 600px) {
+    .hero-right img { height: 300px; }
+    .hero-form-overlay { margin: -50px 16px 40px 16px; padding: 1.5rem; }
+    section { padding: 70px 5vw; }
+    .form-grid { grid-template-columns: 1fr; }
+    .stats { gap: 1.5rem; flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<header id="header">
+  <a href="#" class="logo">Denta<span>Lux</span></a>
+  <nav id="mobile-menu">
+    <a href="#services">Услуги</a>
+    <a href="#doctors">Врачи</a>
+    <a href="#why">О клинике</a>
+    <a href="#reviews">Отзывы</a>
+  </nav>
+  <div class="header-actions">
+    <a href="tel:+74951234567" class="header-phone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.79 10.6a19.79 19.79 0 01-3.07-8.67A2 2 0 012.7 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      +7 (495) 123-45-67
+    </a>
+    <button class="burger-btn" id="burger-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<section class="hero" id="home">
+  <div class="hero-left">
+    <div class="hero-badge reveal">Клиника премиум-класса · Москва</div>
+    <h1 class="reveal reveal-delay-1">Здоровая улыбка — <em>ваша</em> лучшая инвестиция</h1>
+    <p class="hero-sub reveal reveal-delay-2">Передовые технологии, опытные специалисты и атмосфера полного комфорта. Лечение без боли и страха — это реально.</p>
+    <div class="stats reveal reveal-delay-3">
+      <div>
+        <div class="stat-num">15+</div>
+        <div class="stat-label">лет работы</div>
+      </div>
+      <div>
+        <div class="stat-num">8 000+</div>
+        <div class="stat-label">довольных пациентов</div>
+      </div>
+      <div>
+        <div class="stat-num">12</div>
+        <div class="stat-label">специалистов</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=900&q=80" alt="Современная стоматология" loading="eager">
+    <div class="hero-form-overlay">
+      <div class="form-title">Записаться на приём</div>
+      <div class="form-sub">Первичная консультация — бесплатно</div>
+      <div class="form-grid">
+        <input type="text" placeholder="Ваше имя">
+        <input type="tel" placeholder="+7 (___) ___-__-__">
+        <select class="form-span">
+          <option value="" disabled selected>Выберите услугу</option>
+          <option>Терапия</option>
+          <option>Ортодонтия</option>
+          <option>Имплантация</option>
+          <option>Отбеливание</option>
+          <option>Детская стоматология</option>
+        </select>
+        <input type="date" placeholder="Дата" class="form-span">
+        <button class="btn-primary form-span">Записаться на приём →</button>
+      </div>
+      <p class="form-note">Нажимая кнопку, вы соглашаетесь с обработкой персональных данных</p>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="section-tag">Наши услуги</div>
+  <h2 class="section-title reveal">Полный спектр<br>стоматологической помощи</h2>
+  <p class="section-sub reveal reveal-delay-1">Мы используем только сертифицированные материалы и оборудование последнего поколения для каждой процедуры.</p>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-icon">🦷</div>
+      <div class="service-name">Лечение кариеса</div>
+      <div class="service-desc">Безболезненное лечение с применением современных анестетиков и световых пломб высшего качества.</div>
+      <div class="service-price">от <strong>3 500 ₽</strong></div>
+    </div>
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-icon">✨</div>
+      <div class="service-name">Отбеливание зубов</div>
+      <div class="service-desc">Профессиональное отбеливание системой ZOOM 4 — результат до 10 тонов за один визит.</div>
+      <div class="service-price">от <strong>18 000 ₽</strong></div>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-icon">🔧</div>
+      <div class="service-name">Имплантация</div>
+      <div class="service-desc">Немецкие и швейцарские импланты с пожизненной гарантией. Полное восстановление зубного ряда.</div>
+      <div class="service-price">от <strong>45 000 ₽</strong></div>
+    </div>
+    <div class="service-card reveal reveal-delay-3">
+      <div class="service-icon">😁</div>
+      <div class="service-name">Ортодонтия</div>
+      <div class="service-desc">Брекеты, элайнеры, ретейнеры. Идеальный прикус для детей и взрослых.</div>
+      <div class="service-price">от <strong>35 000 ₽</strong></div>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon">👶</div>
+      <div class="service-name">Детская стоматология</div>
+      <div class="service-desc">Лечение в игровой форме. Специально обученные педиатрические стоматологи.</div>
+      <div class="service-price">от <strong>2 500 ₽</strong></div>
+    </div>
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-icon">💎</div>
+      <div class="service-name">Виниры и коронки</div>
+      <div class="service-desc">Керамические и циркониевые виниры. Дизайн улыбки по вашему желанию.</div>
+      <div class="service-price">от <strong>22 000 ₽</strong></div>
+    </div>
+  </div>
+</section>
+
+<section id="doctors">
+  <div class="section-tag">Наши специалисты</div>
+  <h2 class="section-title reveal">Команда, которой<br>доверяют</h2>
+  <p class="section-sub reveal reveal-delay-1">Каждый врач — с многолетним опытом и постоянным профессиональным развитием.</p>
+  <div class="doctors-grid">
+    <div class="doctor-card reveal">
+      <img class="doctor-photo" src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=600&q=80" alt="Доктор Петрова">
+      <div class="doctor-info">
+        <div class="doctor-name">Анна Петрова</div>
+        <div class="doctor-spec">Главный врач · Ортодонт</div>
+        <div class="doctor-exp">Опыт 18 лет · Кандидат медицинских наук</div>
+      </div>
+    </div>
+    <div class="doctor-card reveal reveal-delay-1">
+      <img class="doctor-photo" src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=600&q=80" alt="Доктор Смирнов">
+      <div class="doctor-info">
+        <div class="doctor-name">Дмитрий Смирнов</div>
+        <div class="doctor-spec">Хирург-имплантолог</div>
+        <div class="doctor-exp">Опыт 14 лет · 3 000+ имплантаций</div>
+      </div>
+    </div>
+    <div class="doctor-card reveal reveal-delay-2">
+      <img class="doctor-photo" src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=600&q=80" alt="Доктор Козлова">
+      <div class="doctor-info">
+        <div class="doctor-name">Елена Козлова</div>
+        <div class="doctor-spec">Терапевт · Эстетика</div>
+        <div class="doctor-exp">Опыт 11 лет · Специалист по художественной реставрации</div>
+      </div>
+    </div>
+    <div class="doctor-card reveal reveal-delay-3">
+      <img class="doctor-photo" src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600&q=80" alt="Доктор Новиков">
+      <div class="doctor-info">
+        <div class="doctor-name">Михаил Новиков</div>
+        <div class="doctor-spec">Детский стоматолог</div>
+        <div class="doctor-exp">Опыт 9 лет · Специализация — педиатрия</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="why">
+  <div class="section-tag">Почему DentaLux</div>
+  <h2 class="section-title reveal">Стандарты, которые<br>отличают нас</h2>
+  <div class="why-grid">
+    <div class="why-item reveal">
+      <div class="why-num">01</div>
+      <div class="why-title">Безболезненное лечение</div>
+      <div class="why-text">Современные анестетики и техники введения обеспечивают полный комфорт даже при сложных процедурах.</div>
+    </div>
+    <div class="why-item reveal reveal-delay-1">
+      <div class="why-num">02</div>
+      <div class="why-title">Цифровые технологии</div>
+      <div class="why-text">3D-диагностика, интраоральные сканеры, цифровое моделирование улыбки — всё в одной клинике.</div>
+    </div>
+    <div class="why-item reveal reveal-delay-2">
+      <div class="why-num">03</div>
+      <div class="why-title">Стерильность и безопасность</div>
+      <div class="why-text">Автоклавная стерилизация, одноразовые расходники и система контроля инфекций по европейским стандартам.</div>
+    </div>
+    <div class="why-item reveal reveal-delay-3">
+      <div class="why-num">04</div>
+      <div class="why-title">Гарантия на работы</div>
+      <div class="why-text">Даём письменную гарантию на все виды лечения — от 1 года на терапию до пожизненной на импланты.</div>
+    </div>
+  </div>
+</section>
+
+<section id="reviews">
+  <div class="section-tag">Отзывы пациентов</div>
+  <h2 class="section-title reveal">Нам доверяют<br>тысячи людей</h2>
+  <div class="reviews-grid">
+    <div class="review-card reveal">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">«Наконец-то нашла клинику, где не страшно! Анна Петрова — невероятный специалист. Поставила брекеты, всё объяснила, ни разу не было больно. Результатом очень довольна.»</p>
+      <div class="review-author">
+        <div class="review-avatar">М</div>
+        <div>
+          <div class="review-name">Мария Иванова</div>
+          <div class="review-date">Март 2025</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card reveal reveal-delay-1">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">«Делал имплантацию у Дмитрия Смирнова. Профессионал высочайшего уровня. Реабилитация прошла быстро, сейчас ничего не напоминает о том, что там был имплант — как родной зуб.»</p>
+      <div class="review-author">
+        <div class="review-avatar">А</div>
+        <div>
+          <div class="review-name">Алексей Громов</div>
+          <div class="review-date">Февраль 2025</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card reveal reveal-delay-2">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">«Привожу сюда дочку с 4 лет. Михаил Новиков умеет работать с детьми — ребёнок сам просится к стоматологу! Клиника чистая, уютная, персонал приветливый.»</p>
+      <div class="review-author">
+        <div class="review-avatar">Е</div>
+        <div>
+          <div class="review-name">Екатерина Волкова</div>
+          <div class="review-date">Январь 2025</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">Denta<span>Lux</span></div>
+      <p class="footer-desc">Стоматологическая клиника премиум-класса в центре Москвы. Профессиональная забота о здоровье вашей улыбки с 2009 года.</p>
+    </div>
+    <div>
+      <div class="footer-contact-title">Контакты</div>
+      <div class="footer-contact-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Москва, ул. Тверская, 15, офис 204
+      </div>
+      <div class="footer-contact-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.79 10.6a19.79 19.79 0 01-3.07-8.67A2 2 0 012.7 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        +7 (495) 123-45-67
+      </div>
+      <div class="footer-contact-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        info@dentalux.ru
+      </div>
+      <div class="footer-contact-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Пн–Пт: 9:00–21:00 · Сб–Вс: 10:00–18:00
+      </div>
+    </div>
+  </div>
+
+  <div class="map-embed">
+    <iframe
+      src="https://www.openstreetmap.org/export/embed.html?bbox=37.57%2C55.75%2C37.64%2C55.78&layer=mapnik&marker=55.7651%2C37.6082"
+      allowfullscreen
+      loading="lazy"
+      title="Карта клиники">
+    </iframe>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© 2026 DentaLux. Все права защищены.</span>
+    <span>Лицензия № ЛО-77-01-0123456</span>
+  </div>
+</footer>
+
+<script>
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  const burgerBtn = document.getElementById('burger-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  burgerBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('active');
+  });
+
+  const navLinks = mobileMenu.querySelectorAll('a');
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('active');
+    });
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  reveals.forEach(el => observer.observe(el));
+
+  document.querySelectorAll('.hero .reveal').forEach(el => {
+    setTimeout(() => el.classList.add('visible'), 200);
+  });
+</script>
+</body>
+</html>
